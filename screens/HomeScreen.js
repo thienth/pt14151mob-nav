@@ -13,6 +13,27 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      products: []
+    }
+  }
+
+  componentDidMount() {
+    fetch('http://5ceb727b77d47900143b895f.mockapi.io/products', {
+      method: "GET"
+    })
+    .then(data => data.json())
+    .then(jsonData => {
+      this.setState({
+        products: jsonData
+      })
+    });
+  }
+  
+
   static navigationOptions = {
     header: null,
   };
@@ -22,15 +43,49 @@ export default class HomeScreen extends React.Component {
     navigate('ngabeo');
   }
 
+  onRemoveProduct = (removeId) => {
+    // 1. gửi request lên server để xóa sản phẩm có id = removeId
+    fetch(`http://5ceb727b77d47900143b895f.mockapi.io/products/${removeId}`, {
+      method: "DELETE"
+    })
+    .then(data => data.json())
+    .then(jsonData => {
+      // 2. Nếu server xóa thành công => xóa sản phẩm có id tương ứng khỏi state.products
+      // hiển thị thông báo xóa thành công
+      let newProducts = this.state.products.filter(item => item.id != jsonData.id);
+      this.setState({
+        products: newProducts
+      });
+
+      alert(`Đã xóa thành công sản phẩm "${jsonData.product_name}"`);
+    });
+    
+    // 3. Nếu server xóa không thành công => hiển thị thông báo xóa không thành công
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-
-        <Text
-          onPress={this.gotoDetailProduct}
-        >Home Screens</Text>
-
-      </View>
+      <ScrollView>
+        <View style={styles.container}>
+          {this.state.products.map(item => 
+            <View key={item.id}>
+              <Image source={{uri: item.image}} style={{
+                width: 100, height: 100
+              }}/>
+              <Text>{item.product_name}</Text>
+              <Text>Giá: ${item.price}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.onRemoveProduct(item.id)
+                  }
+                }
+              >
+                <Text>Xóa</Text>
+              </TouchableOpacity>
+            </View>  
+          )}
+        </View>
+      </ScrollView>
     );
   }
 
