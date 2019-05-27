@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
-import { MonoText } from '../components/StyledText';
-
 export default class HomeScreen extends React.Component {
   constructor(props){
     super(props);
@@ -58,9 +56,11 @@ export default class HomeScreen extends React.Component {
       });
 
       alert(`Đã xóa thành công sản phẩm "${jsonData.product_name}"`);
-    });
-    
-    // 3. Nếu server xóa không thành công => hiển thị thông báo xóa không thành công
+    })
+    .catch(err => {
+      // 3. Nếu server xóa không thành công => hiển thị thông báo xóa không thành công
+      alert("Xóa không thành công, đã có lỗi xảy ra");
+    })
   }
 
   render() {
