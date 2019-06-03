@@ -69,6 +69,29 @@ export default class HomeScreen extends React.Component {
     console.log(status);
     this.setState({modalShow: status});
   }
+
+  sendNewProduct = () => {
+    var data = {
+      product_name: "something new",
+      image: "http://file.vforum.vn/hinh/2017/12/bai-van-ta-con-cho-lop-2.jpg",
+      price: 1234,
+      detail: "something"
+    }
+    fetch('http://5ceb727b77d47900143b895f.mockapi.io/products', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(jsonData => {
+      var newProducts = [...this.state.products];
+      newProducts.push(jsonData);
+      this.setState({products: newProducts});
+    });
+  }
   render() {
     if(this.state.products.length == 0){
       return (
@@ -80,6 +103,18 @@ export default class HomeScreen extends React.Component {
       return (
         <ScrollView>
           <View style={styles.container}>
+
+          <TouchableOpacity
+                  style={{
+                    height: 30,
+                    backgroundColor:'green'
+                  }}
+                  onPress={() => {
+                    this.sendNewProduct();
+                  }}
+                >
+                <Text>Gui data</Text>
+              </TouchableOpacity>
             <Modal
               visible={this.state.modalShow}
             >
