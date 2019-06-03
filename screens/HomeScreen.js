@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  Modal
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
@@ -16,7 +17,8 @@ export default class HomeScreen extends React.Component {
     super(props);
 
     this.state = {
-      products: []
+      products: [],
+      modalShow: false
     }
   }
 
@@ -53,7 +55,7 @@ export default class HomeScreen extends React.Component {
       // hiển thị thông báo xóa thành công
       let newProducts = this.state.products.filter(item => item.id != jsonData.id);
       this.setState({
-        products2: newProducts
+        products: newProducts
       });
 
       alert(`Đã xóa thành công sản phẩm "${jsonData.product_name}"`);
@@ -63,7 +65,10 @@ export default class HomeScreen extends React.Component {
       alert("Xóa không thành công, đã có lỗi xảy ra");
     })
   }
-
+  toggleModal = (status) => {
+    console.log(status);
+    this.setState({modalShow: status});
+  }
   render() {
     if(this.state.products.length == 0){
       return (
@@ -75,6 +80,44 @@ export default class HomeScreen extends React.Component {
       return (
         <ScrollView>
           <View style={styles.container}>
+            <Modal
+              visible={this.state.modalShow}
+            >
+              <View style={
+                {
+                  marginTop: 100,
+                  backgroundColor: 'grey',
+                  
+                }
+              }>
+                <TouchableOpacity
+                  style={{
+                    height: 30,
+                    backgroundColor:'green'
+                  }}
+                  onPress={() => {
+                    this.toggleModal(false);
+                  }}
+                >
+                  <Text style={{color: 'white'}}>Tat di</Text>
+                </TouchableOpacity>
+                <Text>Noi dung cua modal</Text>
+                
+              </View>
+            </Modal>
+            <TouchableOpacity
+              style={
+                {
+                  height: 30,
+                  backgroundColor: 'red'
+                }
+              }
+              onPress={() => {
+                this.toggleModal(true)
+              }}
+            >
+              <Text>Show modal</Text>
+            </TouchableOpacity>
             {this.state.products.map(item => 
               <View key={item.id}>
                 <Image source={{uri: item.image}} style={{
@@ -135,6 +178,7 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 30,
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: "center",
