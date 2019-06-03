@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  ActivityIndicator,
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
@@ -52,7 +53,7 @@ export default class HomeScreen extends React.Component {
       // hiển thị thông báo xóa thành công
       let newProducts = this.state.products.filter(item => item.id != jsonData.id);
       this.setState({
-        products: newProducts
+        products2: newProducts
       });
 
       alert(`Đã xóa thành công sản phẩm "${jsonData.product_name}"`);
@@ -64,29 +65,38 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    return (
-      <ScrollView>
-        <View style={styles.container}>
-          {this.state.products.map(item => 
-            <View key={item.id}>
-              <Image source={{uri: item.image}} style={{
-                width: 100, height: 100
-              }}/>
-              <Text>{item.product_name}</Text>
-              <Text>Giá: ${item.price}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.onRemoveProduct(item.id)
-                  }
-                }
-              >
-                <Text>Xóa</Text>
-              </TouchableOpacity>
-            </View>  
-          )}
+    if(this.state.products.length == 0){
+      return (
+        <View style={{ marginTop: 50}}>
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
-      </ScrollView>
-    );
+      )
+    }else{
+      return (
+        <ScrollView>
+          <View style={styles.container}>
+            {this.state.products.map(item => 
+              <View key={item.id}>
+                <Image source={{uri: item.image}} style={{
+                  width: 100, height: 100
+                }}/>
+                <Text>{item.product_name}</Text>
+                <Text>Giá: ${item.price}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.onRemoveProduct(item.id)
+                    }
+                  }
+                >
+                  <Text>Xóa</Text>
+                </TouchableOpacity>
+              </View>  
+            )}
+          </View>
+        </ScrollView>
+      );
+    }
+    
   }
 
   _maybeRenderDevelopmentModeWarning() {
