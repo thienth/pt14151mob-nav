@@ -6,10 +6,10 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import AddProductScreen from '../screens/AddProductScreen';
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-  ngabeo: SettingsScreen
+  Home: HomeScreen
 });
 
 HomeStack.navigationOptions = {
@@ -27,7 +27,7 @@ HomeStack.navigationOptions = {
 };
 
 const AddStack = createStackNavigator({
-  Links: LinksScreen,
+  Links: AddProductScreen,
 });
 
 AddStack.navigationOptions = {
