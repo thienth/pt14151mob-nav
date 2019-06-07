@@ -22,17 +22,14 @@ export default class HomeScreen extends React.Component {
     }
     
   }
-  
-  componentWillUpdate(){
-    const { navigation } = this.props;
-    const newItem = navigation.getParam('newItem', null);
-    if(newItem != null){
-      var newProducts = [...this.state.products];
-      newProducts.push(newItem);
-      this.setState({products: newProducts});
-    }
-  }
   componentDidMount() {
+    const {navigation} = this.props;
+    navigation.addListener('willFocus', () =>{
+      this.fetchData();
+    });
+  }
+
+  fetchData = () => {
     fetch('http://5ceb727b77d47900143b895f.mockapi.io/products', {
       method: "GET"
     })
@@ -47,11 +44,6 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
-  gotoDetailProduct = () => {
-    const {navigate} = this.props.navigation;
-    navigate('ngabeo');
-  }
 
   onRemoveProduct = (removeId) => {
     // 1. gửi request lên server để xóa sản phẩm có id = removeId

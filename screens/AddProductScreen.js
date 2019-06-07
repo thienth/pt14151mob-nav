@@ -59,7 +59,6 @@ export default class AddProductScreen extends React.Component {
     .then(response => response.json())
     .then(jsonData => {
       const {navigate} = this.props.navigation;
-      navigate('Home', {newItem: jsonData});
     });
   }
   render() {
