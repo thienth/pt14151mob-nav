@@ -1,17 +1,13 @@
 import React from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   View,
-  Modal,
   Picker,
-  StatusBar,
-  Switch
+  TextInput
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
@@ -20,10 +16,14 @@ export default class AddProductScreen extends React.Component {
     super(props);
 
     this.state = {
-      lang: "",
+      cate_id: "",
+      name: "",
+      image: "",
+      price: 0,
+      detail: "",
       cates: [],
-      toggleSwitch: false,
-      cateListUrl: "http://5ceb727b77d47900143b895f.mockapi.io/categories"
+      cateListUrl: "http://5ceb727b77d47900143b895f.mockapi.io/categories",
+      saveProductUrl: 'http://5ceb727b77d47900143b895f.mockapi.io/products'
     }
   }
   componentDidMount() {
@@ -41,38 +41,79 @@ export default class AddProductScreen extends React.Component {
     header: null,
   };
 
-  toggleModal = (status) => {
-    console.log(status);
-    this.setState({modalShow: status});
-  }
-
-  toggleSwitchAction = () => {
-    var nextToggle = !this.state.toggleSwitch;
-    this.setState({toggleSwitch: nextToggle});
+  submitForm = () => {
+    var data = {
+      product_name: this.state.name,
+      image: this.state.image,
+      price: this.state.price,
+      detail: this.state.detail,
+      cate_id: this.state.cate_id
+    }
+    fetch(this.state.saveProductUrl, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(jsonData => {
+      const {navigate} = this.props.navigation;
+      navigate('Home', {newItem: jsonData});
+    });
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Ngon ngu lap trinh</Text>
-        <Picker
-          selectedValue={this.state.lang}
-          style={{height: 50, width: '100%'}}
-          onValueChange={(selectedValue) => {
-            this.setState({lang: selectedValue});
-          }}
+      <ScrollView style={styles.container}>
+        <Text style={styles.headerText}>Thêm mới sản phẩm</Text>
+        <View>
+          <Text>Tên sản phẩm</Text>
+          <TextInput 
+            onChangeText={(currentName) => {this.setState({name: currentName})}}
+          style={styles.input} />
+        </View>
+        <View>
+          <Text>Ảnh sản phẩm</Text>
+          <TextInput 
+            onChangeText={(currentImage) => {this.setState({image: currentImage})}}
+          style={styles.input} />
+        </View>
+        <View>
+          <Text>Giá</Text>
+          <TextInput 
+            onChangeText={(currentPrice) => {this.setState({price: currentPrice})}}
+          style={styles.input} />
+        </View>
+        <View>
+        <Text>Mô tả</Text>
+          <TextInput 
+            onChangeText={(currentDetail) => {this.setState({detail: currentDetail})}}
+          multiline={true} style={styles.inputMultiple} />
+        </View>
+        <View>
+          <Text>Danh mục</Text>
+          <Picker
+            selectedValue={this.state.cate_id}
+            style={{height: 50, width: '100%'}}
+            onValueChange={(selectedValue) => {
+              this.setState({cate_id: selectedValue});
+            }}
+            >
+              <Picker.Item label="---- Vui long chon ngon ngu -----" value="" />
+              {this.state.cates.map((item) =>
+                <Picker.Item key={item.id} label={item.name} value={item.id} />
+              )}
+          </Picker>
+        </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => {this.submitForm()}}
           >
-            <Picker.Item label="---- Vui long chon ngon ngu -----" value="" />
-            {this.state.cates.map((item) =>
-              <Picker.Item key={item.id} label={item.name} value={item.id} />
-            )}
-        </Picker>
-        <Text>{this.state.toggleSwitch}</Text>
-        <Switch
-          onValueChange={() => this.toggleSwitchAction()}
-          value={this.state.toggleSwitch}
-        />
+            <Text>Lưu</Text>
+          </TouchableOpacity>
+        </View>
         
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -82,8 +123,25 @@ const styles = StyleSheet.create({
     marginTop: 30,
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: "center",
-    alignItems: 'center'
+  },
+  headerText:{
+    fontSize: 30,
+    fontWeight: "bold",
+    marginTop: 20
+  },
+  input:{
+    height: 30,
+    borderWidth: 1,
+    marginBottom: 10,
+    marginLeft: 5,
+    marginRight: 5
+  },
+  inputMultiple: {
+    height: 100,
+    borderWidth: 1,
+    marginBottom: 10,
+    marginLeft: 5,
+    marginRight: 5
   },
   developmentModeText: {
     marginBottom: 20,

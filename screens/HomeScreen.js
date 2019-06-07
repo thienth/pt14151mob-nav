@@ -15,13 +15,23 @@ import { WebBrowser } from 'expo';
 export default class HomeScreen extends React.Component {
   constructor(props){
     super(props);
-
+    
     this.state = {
       products: [],
       modalShow: false
     }
+    
   }
-
+  
+  componentWillUpdate(){
+    const { navigation } = this.props;
+    const newItem = navigation.getParam('newItem', null);
+    if(newItem != null){
+      var newProducts = [...this.state.products];
+      newProducts.push(newItem);
+      this.setState({products: newProducts});
+    }
+  }
   componentDidMount() {
     fetch('http://5ceb727b77d47900143b895f.mockapi.io/products', {
       method: "GET"
@@ -33,7 +43,6 @@ export default class HomeScreen extends React.Component {
       })
     });
   }
-  
 
   static navigationOptions = {
     header: null,
@@ -93,6 +102,14 @@ export default class HomeScreen extends React.Component {
     });
   }
   render() {
+
+    // const { navigation } = this.props;
+    // const newItem = navigation.getParam('newItem', null);
+    // if(newItem != null){
+    //   var newProducts = [...this.state.products];
+    //   newProducts.push(newItem);
+    //   this.setState({products: newProducts});
+    // }
     if(this.state.products.length == 0){
       return (
         <View style={{ marginTop: 50}}>
