@@ -9,7 +9,9 @@ import {
   ActivityIndicator,
   View,
   Modal,
-  Picker
+  Picker,
+  StatusBar,
+  Switch
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
@@ -20,6 +22,7 @@ export default class AddProductScreen extends React.Component {
     this.state = {
       lang: "",
       cates: [],
+      toggleSwitch: false,
       cateListUrl: "http://5ceb727b77d47900143b895f.mockapi.io/categories"
     }
   }
@@ -42,7 +45,11 @@ export default class AddProductScreen extends React.Component {
     console.log(status);
     this.setState({modalShow: status});
   }
-  
+
+  toggleSwitchAction = () => {
+    var nextToggle = !this.state.toggleSwitch;
+    this.setState({toggleSwitch: nextToggle});
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -59,7 +66,12 @@ export default class AddProductScreen extends React.Component {
               <Picker.Item key={item.id} label={item.name} value={item.id} />
             )}
         </Picker>
-          <Text>{this.state.lang}</Text>
+        <Text>{this.state.toggleSwitch}</Text>
+        <Switch
+          onValueChange={() => this.toggleSwitchAction()}
+          value={this.state.toggleSwitch}
+        />
+        
       </View>
     )
   }
