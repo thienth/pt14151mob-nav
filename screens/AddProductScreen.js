@@ -18,19 +18,21 @@ export default class AddProductScreen extends React.Component {
     super(props);
 
     this.state = {
-      lang: ""
+      lang: "",
+      cates: [],
+      cateListUrl: "http://5ceb727b77d47900143b895f.mockapi.io/categories"
     }
   }
   componentDidMount() {
-    // fetch('http://5ceb727b77d47900143b895f.mockapi.io/products', {
-    //   method: "GET"
-    // })
-    // .then(data => data.json())
-    // .then(jsonData => {
-    //   this.setState({
-    //     products: jsonData
-    //   })
-    // });
+    fetch(this.state.cateListUrl, {
+      method: "GET"
+    })
+    .then(data => data.json())
+    .then(jsonData => {
+      this.setState({
+        cates: jsonData
+      })
+    });
   }
   static navigationOptions = {
     header: null,
@@ -52,11 +54,10 @@ export default class AddProductScreen extends React.Component {
             this.setState({lang: selectedValue});
           }}
           >
-          <Picker.Item label="---- Vui long chon ngon ngu -----" value="" />
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="js" />
-          <Picker.Item label="Android" value="android" />
-          <Picker.Item label="Kotlin" value="kotlin" />
+            <Picker.Item label="---- Vui long chon ngon ngu -----" value="" />
+            {this.state.cates.map((item) =>
+              <Picker.Item key={item.id} label={item.name} value={item.id} />
+            )}
         </Picker>
           <Text>{this.state.lang}</Text>
       </View>
